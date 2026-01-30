@@ -51,7 +51,7 @@ Open Termux and run:
 
 ```bash
 pkg update && pkg upgrade -y
-pkg install wget tar proot -y
+pkg install wget tar -y
 ```
 
 Check root access:
@@ -66,12 +66,14 @@ If you get a root shell, continue.
 
 ### Download Debian RootFS
 
-Example: Debian 12 (Bookworm)
+This setup uses a minimal Debian 13 (Trixie) root filesystem provided as a compressed `rootfs.tar.xz` archive.
 
 ```bash
 cd /data/local/tmp
-wget https://github.com/debuerreotype/docker-debian-artifacts/raw/dist-amd64/bookworm/rootfs.tar.xz
+wget <DEBIAN_ROOTFS_URL>
 ```
+
+Replace `<DEBIAN_ROOTFS_URL>` with a Debian 13 (Trixie) arm64 rootfs archive.
 
 Choose the correct architecture:
 - arm64 → most modern devices
@@ -88,26 +90,51 @@ tar -xpf rootfs.tar.xz -C /data/debian
 
 ---
 
-### Mount Required Filesystems
+### Create start script
+
+Create a file named `start.sh`:
 
 ```bash
-mount --bind /dev /data/debian/dev
-mount --bind /proc /data/debian/proc
-mount --bind /sys /data/debian/sys
-mount --bind /sdcard /data/debian/sdcard
+nano start.sh
+```
+
+Paste the following content:
+
+```bash
+#!/data/data/com.termux/files/usr/bin/bash
+
+DEBIAN_DIR=$HOME/debian
+
+echo "[*] Mounting filesystems..."
+
+mount -o bind /dev $DEBIAN_DIR/dev
+mount -t proc proc $DEBIAN_DIR/proc
+mount -t sysfs sys $DEBIAN_DIR/sys
+mount -o bind /sdcard $DEBIAN_DIR/sdcard
+
+echo "nameserver 1.1.1.1" > $DEBIAN_DIR/etc/resolv.conf
+
+echo "[*] Entering Debian chroot..."
+chroot $DEBIAN_DIR /bin/bash
+```
+
+Make the script executable:
+
+```bash
+chmod +x start.sh
 ```
 
 ---
+### Start Debian
 
-### Enter Debian
+Run the script as root:
 
 ```bash
-chroot /data/debian /bin/bash
+su
+./start.sh
 ```
 
-You are now inside Debian Linux.
-
----
+You are now inside the Debian chroot environment.
 
 ### Post Installation Setup
 

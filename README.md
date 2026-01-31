@@ -12,8 +12,12 @@ No public IP or port forwarding is required.
 - Overview
 - Requirements
 - Debian Chroot Setup
-- Navidrome Music Server
-- Cloudflare Tunnel
+- External Storage
+- Services Overview
+  - Navidrome
+  - File Browser
+  - Web Hosting (Nginx + Cloudflare)
+  - Remote Access (Tailscale)
 - Notes
 - License
 

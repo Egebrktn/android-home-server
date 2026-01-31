@@ -31,7 +31,7 @@ This project shows how to repurpose an old or spare Android phone as a personal 
 Features:
 - Debian Linux via real chroot (not proot)
 - Navidrome music streaming server
-- Cloudflare Tunnel for external access
+- Cloudflare and nginx for self hosted website
 - Low power consumption
 
 ---
